@@ -37,11 +37,11 @@
 
         <tbody>
 
-          <tr>
+          <tr v-for="produto of produtos" :key="produto.id">
 
-            <td>Arduino</td>
-            <td>100</td>
-            <td>50.00</td>
+            <td>{{produto.nome}}</td>
+            <td>{{produto.quantidade}}</td>
+            <td>{{produto.valor}}</td>
             <td>
               <button class="waves-effect btn-small blue darken-1"><i class="material-icons">create</i></button>
               <button class="waves-effect btn-small red darken-1"><i class="material-icons">delete_sweep</i></button>
@@ -57,3 +57,23 @@
 
   </div>
 </template>
+
+<script>
+import Produto from './services/produtos'
+
+  export default{
+
+    data(){
+      return{
+        produtos:[]
+      }
+    },
+
+    mounted(){
+      Produto.listar().then(resposta => {
+        console.log(resposta.data)
+        this.produtos = resposta.data
+      })
+    }
+  }
+</script>
