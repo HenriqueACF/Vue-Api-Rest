@@ -8,6 +8,12 @@
     </nav>
 
     <div class="container">
+      <!--LISTAGEM DE ERROS -->
+      <ul>
+        <li v-for="(erro, index) of errors" :key="index">
+          campo <b>{{erro.field}}</b> - {{erro.defaltMessage}}
+        </li>
+      </ul>
       <form @submit.prevent="salvar">
           <label>Nome</label>
           <input type="text" placeholder="Nome" :v-model="produto.nome">
@@ -35,7 +41,7 @@
             <td>{{produto.quantidade}}</td>
             <td>{{produto.valor}}</td>
             <td>
-              <button class="waves-effect btn-small blue darken-1"><i class="material-icons">create</i></button>
+              <button @click="editar(produto)" class="waves-effect btn-small blue darken-1"><i class="material-icons">create</i></button>
               <button class="waves-effect btn-small red darken-1"><i class="material-icons">delete_sweep</i></button>
             </td>
           </tr>
@@ -53,12 +59,14 @@ import Produto from './services/produtos'
     data(){
       return{
         produto:{
+            id:'',
             nome:'',
             quantidade:'',
             valor:'',
         },
 
-        produtos:[]
+        produtos:[],
+        errors:[]
       }
     },
     //Montando a aplicação para receber a lista de produtos da api
@@ -78,11 +86,31 @@ import Produto from './services/produtos'
       },
       //salvando dados
       salvar(){
-        Produto.salvar(this.produto).then(resposta =>{
-          this.produto = {}
-          alert('Salvo', resposta)
-          this.listar()
-        })
+        if(!this.produto.id){
+          Produto.salvar(this.produto).then(resposta =>{
+            this.produto = {}
+            alert('Salvo')
+            this.listar()
+            this.errors = []
+          }).catch(e =>{
+            this.errors = response.data.errors
+          })
+        //atualizar
+        }else{
+          Produto.atualizar(this.produto).then(resposta =>{
+            this.produto = {}
+            alert('Salvo')
+            this.listar()
+            this.errors = []
+          }).catch(e =>{
+            this.errors = response.data.errors
+          })
+        }
+
+      },
+
+      editar(produto){
+        this.produto = produto
       }
     }
   }
