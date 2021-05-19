@@ -61,18 +61,27 @@ import Produto from './services/produtos'
         produtos:[]
       }
     },
-
+    //Montando a aplicação para receber a lista de produtos da api
     mounted(){
-      Produto.listar().then(resposta => {
-        console.log(resposta.data)
-        this.produtos = resposta.data
-      })
+      //Chamando a função de listar
+      this.listar()
     },
 
+
+
+    //Criando os metodos do CRUD, salvar, visualizar, atualizar e deletar
     methods:{
+      listar(){
+        Produto.listar().then(resposta =>{
+          this.produtos = resposta.data
+        })
+      },
+      //salvando dados
       salvar(){
         Produto.salvar(this.produto).then(resposta =>{
-          alert('Salvo')
+          this.produto = {}
+          alert('Salvo', resposta)
+          this.listar()
         })
       }
     }
